@@ -1,0 +1,32 @@
+Copyright (c) 2026 Wardogs.market. All rights reserved.
+
+SCOPE
+This license covers the original source code, page design, layout, styling,
+text and original graphics of the Wardogs.market website (the "Software"),
+excluding the third-party material described below.
+
+RESTRICTIONS
+No license or other right is granted to use, copy, modify, merge, publish,
+distribute, sublicense, sell, host, or create derivative works from the
+Software, in whole or in part, without the prior written permission of the
+copyright holder.
+
+Viewing the source code is permitted for the sole purpose of inspecting how
+the website works.
+
+THIRD-PARTY MATERIAL
+WARDOGS, BULKHEAD, Team17, and all related names, logos, trademarks, game
+artwork, screenshots, images and other intellectual property are the property
+of their respective owners. Wardogs.market is an independent, third-party fan
+website and is not affiliated with, endorsed by, or sponsored by BULKHEAD or
+Team17. No rights in that material are granted or claimed by this license.
+
+NO WARRANTY
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
+
+To request permission to use any part of this work, contact the copyright
+holder.

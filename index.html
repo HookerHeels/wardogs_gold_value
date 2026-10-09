@@ -4,20 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WARDOGS // Gold Market</title>
-<meta name="description" content="Daily gold market value for WARDOGS, refreshed every day at 00:00 UTC.">
+<meta name="description" content="Wardogs Gold Rate">
 <meta name="theme-color" content="#d4a017">
 <link rel="canonical" href="https://www.wardogs.market/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Wardogs.market">
 <meta property="og:title" content="WARDOGS // Gold Market">
-<meta property="og:description" content="Check the daily value of Gold Bars in WARDOGS">
+<meta property="og:description" content="Wardogs Gold Rate">
 <meta property="og:url" content="https://www.wardogs.market/">
-<meta property="og:image" content="https://www.wardogs.market/preview-image.png">
+<meta property="og:image" content="https://www.wardogs.market/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="WARDOGS Gold Market: the daily gold bar rate, updated every day at 00:00 UTC">
+<meta property="og:image:alt" content="WARDOGS Gold Market: stacked gold bars, with the gold bar rate updated every day at 00:00 UTC">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.wardogs.market/preview-image.png">
+<meta name="twitter:image" content="https://www.wardogs.market/og-image.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -144,6 +144,21 @@
   .tile.wide { grid-column: span 2; }
   .tile.tall { grid-row: span 2; }
   .tile.big  { grid-column: span 2; grid-row: span 2; }
+
+  /* Featured tile (limited-time skin): bigger, gold frame always on, slow pulsing glow, badge */
+  .tile.feature { grid-column: span 4; grid-row: span 2; z-index: 2; filter: drop-shadow(0 0 12px rgba(240,185,42,.45)); }
+  .tile.feature .tile-frame { background: linear-gradient(135deg, #f0b92a 0%, #6d5209 35%, #f0b92a 70%, #8a6508 100%); }
+  .tile.feature .tile-frame::before { opacity: 0; }
+  .tile.feature .tile-name { font-size: 24px; letter-spacing: 1px; top: 14px; color: #fff3cf; }
+  .tile.feature .serial { font-size: 18px; letter-spacing: 1.4px; }
+  .tile.feature .tile-strip { padding-top: 46px; }
+  .tile.feature .tile-label { height: 40px; font-size: 19px; border-top-color: var(--gold-bright); }
+  .tile.feature .tile-strip { bottom: 40px; width: 32px; }
+  .tile.feature .tile-strip::before { width: 18px; height: 18px; left: 7px; }
+  .tile.feature .tile-name { left: 46px; }
+  .tile-label .lt { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 6px;
+    font: .78em/1 var(--display); letter-spacing: 1.4px; color: var(--gold-bright); text-transform: uppercase; text-shadow: 0 0 8px rgba(240,185,42,.45); }
+  .tile-label .lt svg { width: 1.05em; height: 1.05em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; flex: none; }
   .tile:hover, .tile:focus-visible { transform: scale(1.05); z-index: 5; outline: none; filter: drop-shadow(0 0 14px var(--skin-glow)); }
 
   .tile-frame, .tile-in {
@@ -161,12 +176,14 @@
   .tile-img .rifle { position: absolute; left: 50%; top: 45%; width: 70%; transform: translate(-50%, -50%); fill: var(--gold-dim); opacity: .4; }
   /* Side strip with the serial running down it, a gold marker above, and the skin name across the top */
   .tile-strip {
-    position: absolute; left: 0; top: 0; bottom: 30px; width: 26px; z-index: 2; display: flex; justify-content: center; padding-top: 26px;
+    position: absolute; left: 0; top: 0; bottom: 30px; width: 26px; z-index: 2; display: flex; justify-content: center; padding-top: 38px;
     background: linear-gradient(90deg, rgba(0,0,0,.7), rgba(0,0,0,.35)); border-right: 1px solid rgba(90,93,94,.5);
   }
-  .tile.wide .serial { font-size: 10px; letter-spacing: .3px; }   /* wide tiles are short, so their side names are a touch smaller */
+  .tile.wide .serial { font-size: 12px; letter-spacing: .6px; }
+  .tile.wide:not(.feature) .tile-strip { padding-top: 28px; }
+  .tile.wide.feature .serial { font-size: 18px; letter-spacing: 1.4px; }   /* wide tiles are short, so their side names are a touch smaller */
   .tile-strip::before { content: ""; position: absolute; top: 8px; left: 6px; width: 14px; height: 14px; background: var(--skin-mark, var(--skin)); box-shadow: 0 0 0 1px var(--skin-edge, rgba(0,0,0,.35)); }
-  .serial { writing-mode: vertical-rl; font: 11px var(--display); letter-spacing: .5px; color: #a3a6a0; text-transform: uppercase; max-height: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .serial { writing-mode: vertical-rl; font: 700 14px var(--body); letter-spacing: 1px; color: #a3a6a0; text-transform: uppercase; max-height: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .tile-name {
     position: absolute; top: 9px; left: 38px; right: 26px; z-index: 2; text-align: center;
     font: 700 14px/1.15 var(--body); letter-spacing: .3px; color: #f4f1e8; text-shadow: 0 1px 3px #000;
@@ -198,9 +215,15 @@
     .armory-panel { padding: 16px; }
     .tile-grid { --cols: 2; --gap: 8px; }
     .tile.big { grid-column: span 1; grid-row: span 1; }
+    .tile.feature { grid-column: span 2; grid-row: span 1; }
+    .tile.feature .tile-name { font-size: 17px; }
+    .tile.feature .tile-label { height: 32px; font-size: 14px; padding-right: 100px; }
+    .tile-label .lt { right: 10px; font-size: 10px; letter-spacing: 1px; }
+    .tile.feature .tile-strip { bottom: 32px; }
     .tile-label { font-size: 11px; height: 30px; padding: 0 16px; gap: 4px; }
     .tile-strip { bottom: 30px; }
-    .serial { font-size: 10px; letter-spacing: 1px; }
+    .serial { font-size: 12px; letter-spacing: .6px; }
+    .tile-strip { padding-top: 32px; }
     .tile-name { left: 36px; right: 20px; font-size: 13px; }
   }
   @media (prefers-reduced-motion: reduce) { .tile, .tile-frame::before { transition: none; } }
@@ -220,28 +243,51 @@
 
   /* Value panel */
   .value-panel {
-    min-height: 260px; display: flex; align-items: center; justify-content: center; overflow: hidden;
+    min-height: 260px; display: flex; align-items: center; justify-content: center; overflow: visible;   /* visible so the date row's hover area can reach past the frame; the background layers clip themselves */
     border-color: var(--gold-dim);
     background: linear-gradient(180deg, #14130d, #070706);
     box-shadow: 0 0 0 1px #000, 0 0 30px rgba(212,160,23,.08);
   }
-  .graphic { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .4; pointer-events: none; }
+  .graphic { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .4; pointer-events: none; clip-path: inset(0); }
   /* Scattered faint squares (drawn by script) over grain and a soft diagonal shadow; static, clearer in the middle */
   .checker {
-    position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: .45;
+    position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: .45; clip-path: inset(0);
     background:
       linear-gradient(172deg, transparent 36%, rgba(0,0,0,.28) 44%, transparent 54%),
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0 / 180px 180px;
     -webkit-mask-image: radial-gradient(ellipse at center, transparent 8%, #000 75%);
             mask-image: radial-gradient(ellipse at center, transparent 8%, #000 75%);
   }
+  /* Past values: a small scrollable row of daily values along the bottom of the value box (newest at the right; drag, swipe or use the wheel to go back in time). Hover or tap one for its date and exact value. */
+  .hist { position: absolute; left: 12px; right: 12px; bottom: -14px; display: flex; gap: 0; z-index: 6; padding-top: 16px; padding-bottom: 14px;
+    overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -ms-overflow-style: none; cursor: grab; overscroll-behavior-x: contain;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 22px, #000 calc(100% - 6px), transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, #000 22px, #000 calc(100% - 6px), transparent 100%); }
+  .hist::-webkit-scrollbar { display: none; }
+  .hist.drag { cursor: grabbing; user-select: none; }
+  .hist[hidden] { display: none !important; }
+  .hist .hb { position: relative; flex: 0 0 auto; text-align: center; padding: 6px 5px 4px; font: 600 12px/1 var(--body); letter-spacing: 0; white-space: nowrap;
+    color: var(--grey); opacity: .8; border-bottom: 1px solid #3a3a3a; outline: none; transform-origin: 50% 100%; transition: color .15s, opacity .15s, transform .15s; }
+  .hist .hb::before { content: ""; position: absolute; left: 0; right: 0; top: -15px; bottom: -18px; }   /* taller invisible hover area, so you don't have to hit the text exactly */
+  .hist .hb:first-child { margin-left: auto; } .hist .hb:last-child { margin-right: auto; }   /* centred when it all fits; scrolls when it does not */
+  .hist .hb.today { color: var(--gold-bright); opacity: 1; border-bottom-color: var(--gold-bright); }
+  .hist .hb:hover, .hist .hb:focus { color: var(--gold-bright); opacity: 1; border-bottom-color: var(--gold-bright); transform: scale(1.3); }
+  .hist-tip { position: absolute; bottom: 34px; z-index: 7; white-space: nowrap; padding: 3px 6px 4px; text-align: center; background: #000; border: 1px solid #3a3a3a;
+    box-shadow: 0 0 10px rgba(0,0,0,.9); opacity: 0; pointer-events: none; transition: opacity .12s; transform: translateX(-50%); }
+  .hist-tip .t1 { font: 700 15px/1.1 var(--body); letter-spacing: 1px; color: var(--gold-bright); }
+  .hist-tip .t2 { margin-top: 2px; font: 600 11px/1 var(--body); letter-spacing: 1px; color: var(--grey); }
+  .hist-tip[data-dir="up"] .t1 { color: #e5383b; }
+  .hist-tip[data-dir="down"] .t1 { color: #3ddc5a; }
+  .hist-tip.on { opacity: 1; }
+  body.stale .hist, body.stale .hist-tip { filter: grayscale(1); }
+  body.stale .hist { opacity: .6; }
   .g-shadow { fill: none; stroke: #000; stroke-width: 9; opacity: .7; }
   .g-trace  { fill: none; stroke: var(--gold-dim); stroke-width: 3; }
   .g-ring   { fill: none; stroke: var(--gold); stroke-width: 2; opacity: .8; }
   .g-dot    { fill: var(--gold-bright); }
 
   .price-content {
-    position: relative; z-index: 5; width: 100%; padding: 30px 20px; text-align: center;
+    position: relative; z-index: 5; width: 100%; padding: 30px 20px 40px; text-align: center;
     background: radial-gradient(ellipse at center, rgba(4,4,3,.9) 0%, rgba(4,4,3,.55) 45%, transparent 75%);
   }
   .value-label { font: clamp(20px, 4vw, 26px) var(--display); letter-spacing: 6px; color: var(--grey-light); margin-bottom: 8px; }
@@ -291,8 +337,8 @@
 
   .subline { margin-top: 10px; font: 600 15px var(--body); letter-spacing: 2.5px; color: var(--grey); }
   .subline .change { margin-left: 14px; font-weight: 700; letter-spacing: 1.5px; }
-  .subline .change.up   { color: var(--gold-bright); }
-  .subline .change.down { color: #e5383b; }
+  .subline .change.up   { color: #e5383b; }   /* gold went up: red */
+  .subline .change.down { color: #3ddc5a; }   /* gold went down: green */
   body.stale .subline .change { color: #6c6f70; }
   .subline span { color: var(--grey-light); font-variant-numeric: tabular-nums; }
 
@@ -415,6 +461,8 @@
         <div class="subline">YESTERDAY: <span id="previous">—</span><span class="change" id="change"></span></div>
       </div>
 
+      <div class="hist" id="hist" role="list" aria-label="Past daily values" hidden></div>
+      <div class="hist-tip" id="hist-tip" aria-hidden="true"></div>
       <span class="latch l"></span><span class="latch r"></span>
     </section>
 
@@ -459,9 +507,41 @@
      DAILY VALUES now live in values.json (upload just that file each day).
      The three numbers below are only a fallback, used if values.json can't be read.
      ========================================================== */
-  let CURRENT_GOLD_VALUE  = 492453;
-  let PREVIOUS_GOLD_VALUE = 166000;
-  let UPDATED_AT          = "2026-10-05T00:00:00Z";  /* UTC, ISO format; shown in each visitor's own time */
+  let CURRENT_GOLD_VALUE  = 407388;
+  let PREVIOUS_GOLD_VALUE = 447691;
+  let UPDATED_AT          = "2026-10-09T00:20:00Z";  /* UTC, ISO format; shown in each visitor's own time */
+  let HISTORY = {
+    "2026-09-10": 2798240,
+    "2026-09-11": 2413120,
+    "2026-09-12": 2303752,
+    "2026-09-13": 2303752,
+    "2026-09-14": 2067814,
+    "2026-09-15": 2113114,
+    "2026-09-16": 1774565,
+    "2026-09-17": 1547240,
+    "2026-09-18": 1470113,
+    "2026-09-19": 1558250,
+    "2026-09-20": 1558250,
+    "2026-09-21": 1672688,
+    "2026-09-22": 1797600,
+    "2026-09-23": 1685515,
+    "2026-09-24": 1691553,
+    "2026-09-25": 1510085,
+    "2026-09-26": 1568628,
+    "2026-09-27": 1568628,
+    "2026-09-28": 1627740,
+    "2026-09-29": 1418305,
+    "2026-09-30": 812640,
+    "2026-10-01": 694217,
+    "2026-10-02": 331582,
+    "2026-10-03": 166000,
+    "2026-10-04": 166000,
+    "2026-10-05": 492453,
+    "2026-10-06": 459112,
+    "2026-10-07": 326749,
+    "2026-10-08": 447691
+  };                                  /* past daily values from values.json: { "2026-10-07": 326749, ... } (UTC day of each reset) */
+  const HISTORY_DAYS = 120;                          /* how many days the bottom strip shows */
   const VALUES_URL = "values.json";
   const VALUES_POLL_MS = 120000;                     /* open pages re-check values.json this often (2 minutes) */
 
@@ -471,10 +551,10 @@
      Pictures attach automatically by name (item + skin) from the embedded images at the bottom of this file;
      or set img: "file.png" / a full URL. Show cash as $2.46M (true) or the full $2,462,265 (false): */
   const ABBREVIATE_CASH = true;
-  const SHUFFLE_ARMORY = true;      /* true = tiles appear in a random order that changes once a day (same for everyone that day) */
+  const SHUFFLE_ARMORY = false;     /* false = tiles stay in the order listed below (featured ones first); true = a random order that changes once a day */
   const ARMORY_ITEMS = [
     { item: "A-91", skin: "Two Tone Desert", bars: 5, size: "big" },
-    { item: "AK74", skin: "Black And Gold", bars: 30, size: "wide" },
+    { item: "AK74", skin: "Black And Gold", bars: 30, size: "wide", featured: "LIMITED TIME" },   /* featured: big highlighted tile, shown first, with this badge text */
     { item: "AMP-9", skin: "Two Tone Desert", bars: 10, size: "wide" },
     { item: "AMR 50", skin: "Two Tone Desert", bars: 15, size: "wide" },
     { item: "Bobcat", skin: "Two Tone Desert", bars: 5, size: "big" },
@@ -500,7 +580,7 @@
 
   /* If the values still haven't been updated this many minutes after the reset, the page flips to LAST KNOWN VALUE / OFFLINE and fades */
   const STALE_AFTER_MINUTES = 5;
-  const UPDATE_NOTE = "UPDATED DAILY // MAY TAKE UP TO 3 HOURS";   /* footer disclaimer wording; separate from the 5-minute offline timer above */
+  const UPDATE_NOTE = "UPDATED DAILY // MAY TAKE UP TO 2 HOURS";   /* footer disclaimer wording; separate from the 5-minute offline timer above */
   /* ========================================================== */
 
   const DAY_MS = 86400000, NEAR_MS = 300000;
@@ -522,6 +602,71 @@
   let updatedDate = new Date(UPDATED_AT), updatedValid = !isNaN(updatedDate);
   let valuesReady = false, armoryReady = false, replay = false;
 
+  const short = n => n >= 1e6 ? (n / 1e6).toFixed(2) + "M" : n >= 1e3 ? Math.round(n / 1e3) + "K" : String(n);
+  /* Bottom strip of past values; hover or tap a bar for its date and value */
+  function renderHistory() {
+    const box = $("hist");
+    const day = d => d.toISOString().slice(0, 10);
+    const upd = new Date(UPDATED_AT);
+    const todayKey = isNaN(upd) ? null : day(upd);
+    const map = Object.assign({}, HISTORY);
+    if (todayKey) map[todayKey] = CURRENT_GOLD_VALUE;
+    let keys = Object.keys(map).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k) && isFinite(map[k])).sort().slice(-HISTORY_DAYS);
+    if (keys.length < 2) { box.setAttribute("hidden", ""); box.textContent = ""; return; }
+    const vals = keys.map(k => Number(map[k])), lo = Math.min(...vals), hi = Math.max(...vals), span = hi - lo;
+    const dFmt = new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" });
+    box.textContent = "";
+    keys.forEach((k, i) => {
+      const b = document.createElement("div");
+      b.className = "hb" + (i === keys.length - 1 ? " today" : "");
+      b.textContent = Number(k.slice(5, 7)) + "/" + Number(k.slice(8, 10));
+      const dir = i === 0 ? "" : vals[i] > vals[i - 1] ? "up" : vals[i] < vals[i - 1] ? "down" : "";
+      b.dataset.dir = dir;
+      if (i > 0) { b.dataset.from = "$" + fmt(vals[i - 1]); const pc = vals[i - 1] ? ((vals[i] - vals[i - 1]) / vals[i - 1]) * 100 : 0; b.dataset.pct = (pc > 0 ? "+" : pc < 0 ? "−" : "") + Math.abs(pc).toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "%"; }
+      b.dataset.tip = "$" + fmt(vals[i]);
+      b.tabIndex = 0; b.setAttribute("role", "listitem");
+      box.appendChild(b);
+    });
+    box.removeAttribute("hidden");
+    box.scrollLeft = box.scrollWidth;                   /* start at the newest day */
+  }
+  /* One shared tooltip (so the scrolling row doesn't clip it), plus drag-to-scroll and wheel-to-scroll */
+  (function () {
+    const box = $("hist"), tip = $("hist-tip"), panel = box.parentElement;
+    function show(el) {
+      const d = el.dataset.dir;
+      tip.dataset.dir = d || "";
+      tip.textContent = "";
+      const t1 = document.createElement("div"), t2 = document.createElement("div");
+      t1.className = "t1"; t2.className = "t2";
+      t1.textContent = (d === "up" ? "▲ " : d === "down" ? "▼ " : "") + el.dataset.tip;
+      t2.textContent = el.dataset.from ? "FROM " + el.dataset.from + (d ? "  (" + el.dataset.pct + ")" : "  (NO CHANGE)") : "FIRST DAY SHOWN";
+      tip.append(t1, t2); tip.classList.add("on");
+      const pr = panel.getBoundingClientRect(), r = el.getBoundingClientRect(), w = tip.offsetWidth;
+      let x = r.left + r.width / 2 - pr.left;
+      x = Math.max(w / 2 + 8, Math.min(pr.width - w / 2 - 8, x));
+      tip.style.left = x + "px";
+    }
+    const hide = () => tip.classList.remove("on");
+    box.addEventListener("mouseover", e => { const el = e.target.closest(".hb"); if (el) show(el); });
+    box.addEventListener("mouseleave", hide);
+    box.addEventListener("focusin", e => { const el = e.target.closest(".hb"); if (el) show(el); });
+    box.addEventListener("focusout", hide);
+    box.addEventListener("touchstart", e => { const el = e.target.closest(".hb"); if (el) show(el); }, { passive: true });
+    box.addEventListener("scroll", hide, { passive: true });
+    box.addEventListener("wheel", e => {
+      if (box.scrollWidth <= box.clientWidth) return;
+      const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      const atL = box.scrollLeft <= 0 && d < 0, atR = box.scrollLeft >= box.scrollWidth - box.clientWidth - 1 && d > 0;
+      if (atL || atR) return;                           /* at either end: let the page scroll as normal */
+      box.scrollLeft += d; e.preventDefault();
+    }, { passive: false });
+    let down = false, sx = 0, sl = 0;
+    box.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse") return; down = true; sx = e.clientX; sl = box.scrollLeft; });
+    window.addEventListener("pointermove", e => { if (!down) return; if (Math.abs(e.clientX - sx) > 3) box.classList.add("drag"); box.scrollLeft = sl - (e.clientX - sx); });
+    window.addEventListener("pointerup", () => { down = false; box.classList.remove("drag"); });
+  })();
+
   /* Put the current values on the page: yesterday's value, change vs yesterday, last-updated stamp, Armory cash prices */
   function applyValues(animate) {
     finalText = fmt(CURRENT_GOLD_VALUE);
@@ -534,6 +679,7 @@
       chEl.textContent = (pct > 0 ? "▲ +" : pct < 0 ? "▼ −" : "") + num + "%";
       chEl.classList.add(pct > 0 ? "up" : pct < 0 ? "down" : "flat");
     }
+    renderHistory();
     updatedDate = new Date(UPDATED_AT); updatedValid = !isNaN(updatedDate);
     $("updated").textContent = updatedValid ? localFmt.format(updatedDate).toUpperCase() : "—";
     if (armoryReady) renderArmory();
@@ -644,6 +790,7 @@
   function renderArmory() {
     const pics = window.SKIN_IMAGES || {};
     const list = ARMORY_ITEMS.map((it, i) => ({ it, n: i + 1 }));
+    list.sort((a, b) => (b.it.featured ? 1 : 0) - (a.it.featured ? 1 : 0));        /* featured tiles first (the sort keeps the rest in listed order) */
     if (SHUFFLE_ARMORY) {                              /* seeded by the UTC day: new order each day, same for every visitor */
       let a = Math.floor(Date.now() / 86400000) | 0;
       const rnd = () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
@@ -653,13 +800,13 @@
       const pic = it.img || pics[slug(`${it.item} ${it.skin}`)];
       const swap = it.skin === "Emote";                /* emotes: the emote name is the title, "Emote" runs down the side */
       return `
-    <div class="tile skin-${slug(it.skin)}${it.size ? " " + it.size : ""}${it.bars == null && it.price == null ? " tbd" : ""}" role="group" tabindex="0" aria-label="${it.item} ${it.skin}">
+    <div class="tile skin-${slug(it.skin)}${it.size ? " " + it.size : ""}${it.featured ? " feature" : ""}${it.bars == null && it.price == null ? " tbd" : ""}" role="group" tabindex="0" aria-label="${it.item} ${it.skin}">
       <div class="tile-frame"></div>
       <div class="tile-in">
         <div class="tile-img">${pic ? `<img src="${pic}" alt="" referrerpolicy="no-referrer">` : RIFLE_SVG}</div>
         <div class="tile-strip"><span class="serial">${swap ? it.skin : it.item}</span></div>
         <div class="tile-name">${swap ? it.item : it.skin}</div>
-        <div class="tile-label">${costLabel(it)}</div>
+        <div class="tile-label">${costLabel(it)}${it.featured ? `<span class="lt"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>${it.featured}</span>` : ""}</div>
       </div>
     </div>`;
     }).join("");
@@ -752,7 +899,9 @@
       const v = await res.json();
       const nowV = Number(v.current), prevV = Number(v.previous);
       if (!isFinite(nowV) || !isFinite(prevV) || isNaN(new Date(v.updated))) return false;
-      const changed = nowV !== CURRENT_GOLD_VALUE || prevV !== PREVIOUS_GOLD_VALUE || v.updated !== UPDATED_AT;
+      const hist = (v.history && typeof v.history === "object" && !Array.isArray(v.history)) ? v.history : {};
+      const changed = nowV !== CURRENT_GOLD_VALUE || prevV !== PREVIOUS_GOLD_VALUE || v.updated !== UPDATED_AT || JSON.stringify(hist) !== JSON.stringify(HISTORY);
+      HISTORY = hist;
       CURRENT_GOLD_VALUE = nowV; PREVIOUS_GOLD_VALUE = prevV; UPDATED_AT = v.updated;
       return changed;
     } catch (e) { return false; }

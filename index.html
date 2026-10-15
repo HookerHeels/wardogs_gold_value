@@ -237,38 +237,30 @@
     .tile-name { left: 36px; right: 20px; font-size: 15px; }
   }
   @media (prefers-reduced-motion: reduce) { .tile, .tile-frame::before { transition: none; } }
-  /* Power-on intro (every load): industrial boot sequence, about 2 seconds. Panels flicker on like warehouse lights, a scan line passes over the page. */
+  /* Power-on intro (every load): industrial boot sequence, about 2 seconds. Panels open out from the centre while a scan line passes over the page. */
   html.build .topbar     { animation: b-fade .6s ease-out backwards; }
   html.build .stage::before, html.build .stage::after { animation: b-fade 1s .3s ease-out backwards; }
   html.build .emblem     { animation: b-fade 1.6s .4s ease-out backwards; }
-  html.build #code-label { animation: b-type .5s .55s steps(1, end) backwards; }
-  html.build #page-gold  { animation: b-power 1s .6s linear backwards; }
-  html.build #reset-panel { animation: b-power 1s 1.05s linear backwards; }
+  html.build #code-label { animation: b-fade .5s .5s ease-out backwards; }
+  html.build #page-gold  { animation: b-power .9s .55s cubic-bezier(.25,.7,.2,1) backwards; }
+  html.build #reset-panel { animation: b-power .8s .95s cubic-bezier(.25,.7,.2,1) backwards; }
   html.build footer      { animation: b-fade .8s 1.4s ease-out backwards; }
   html.build .scan { display: block; }
   .scan { display: none; position: absolute; left: 0; right: 0; top: 0; height: 90px; z-index: 4; pointer-events: none;
     background: linear-gradient(180deg, transparent, rgba(240,185,42,.07) 70%, rgba(240,185,42,.38) 99%, transparent);
     animation: b-scan 1.5s .35s cubic-bezier(.45,0,.35,1) both; }
   @keyframes b-fade  { from { opacity: 0; } }
-  @keyframes b-type  { 0% { opacity: 0; } 25% { opacity: 1; } 40% { opacity: 0; } 55% { opacity: 1; } 70% { opacity: .2; } 100% { opacity: 1; } }
-  @keyframes b-power {
-    0%   { opacity: 0; clip-path: inset(-40px 50% -40px 50%); }
-    18%  { opacity: .85; clip-path: inset(-40px 30% -40px 30%); }
-    26%  { opacity: .15; }
-    38%  { opacity: .9; clip-path: inset(-40px 6% -40px 6%); }
-    46%  { opacity: .3; }
-    58%  { opacity: 1; clip-path: inset(-40px -40px -40px -40px); }
-    66%  { opacity: .55; }
-    78%  { opacity: 1; }
-    100% { opacity: 1; clip-path: inset(-40px -40px -40px -40px); }
-  }
+  @keyframes b-power { from { opacity: 0; clip-path: inset(-40px 50% -40px 50%); } 35% { opacity: 1; } to { opacity: 1; clip-path: inset(-40px -40px -40px -40px); } }
   @keyframes b-scan { from { transform: translateY(-100%); opacity: 1; } 85% { opacity: 1; } to { transform: translateY(900px); opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { html.build *, html.build .scan { animation: none !important; } html.build .scan { display: none; } }
+  /* Armory tiles fade in quickly, one after another, whenever the page is shown */
+  .armory-in .tile { animation: tile-in .5s ease-out backwards; animation-delay: calc(.2s + min(var(--i, 0), 22) * 35ms); }
+  @keyframes tile-in { from { opacity: 0; transform: translateY(14px) scale(.96); } }
+  @media (prefers-reduced-motion: reduce) { .armory-in .tile { animation: none; } }
   /* Page change: a gold bar sweeps left to right and the new page is revealed behind it */
   .sweep { position: absolute; top: 0; bottom: 0; left: 0; width: 90px; z-index: 5; pointer-events: none; opacity: 0; will-change: transform;
     background: linear-gradient(90deg, transparent, rgba(240,185,42,.10) 55%, rgba(240,185,42,.55) 96%, #ffe08a 98%, rgba(240,185,42,.0)); }
   .dust { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; display: block; }
-  body.page-armory .dust { display: none; }
   body.stale .dust { opacity: .4; }
 
 
@@ -627,8 +619,8 @@
   const RESET_HOUR_UTC = 0;
 
   /* If the values still haven't been updated this many minutes after the reset, the page flips to LAST KNOWN VALUE / OFFLINE and fades */
-  const STALE_AFTER_MINUTES = 5;
-  const UPDATE_NOTE = "UPDATED DAILY // MAY TAKE UP TO 3 HOURS";   /* footer disclaimer wording; separate from the 5-minute offline timer above */
+  const STALE_AFTER_MINUTES = 1;
+  const UPDATE_NOTE = "UPDATED DAILY // MAY TAKE UP TO 3 HOURS";   /* footer disclaimer wording; separate from the 1-minute offline timer above */
   /* ========================================================== */
 
   const DAY_MS = 86400000, NEAR_MS = 300000;
@@ -874,6 +866,7 @@
     </div>`;
     };
     armoryGrid.innerHTML = list.filter(x => !x.it.stack).map(tileHTML).join("") + (stk.length ? `<div class="tile-stack">${stk.map(tileHTML).join("")}</div>` : "");
+    armoryGrid.querySelectorAll(".tile").forEach((t, i) => t.style.setProperty("--i", i));
   }
   window.addEventListener("load", () => { armoryReady = true; renderArmory(); });
 
@@ -946,7 +939,7 @@
     function frame(t) {
       raf = requestAnimationFrame(frame);
       const dt = Math.min(.05, (t - last) / 1000 || 0); last = t;
-      if (document.body.classList.contains("page-armory") || !W) return;
+      if (!W) return;
       ctx.clearRect(0, 0, W, H);
       for (const p of parts) {
         p.ph += p.sp * dt; p.x += (p.vx + Math.sin(p.ph) * 4) * dt; p.y += (p.vy + Math.cos(p.ph * .8) * 3) * dt;
@@ -972,6 +965,7 @@
     $("code-label").textContent = PAGES[key].code;
     $("reset-panel").hidden = key === "armory";
     document.body.classList.toggle("page-armory", key === "armory");
+    if (key === "armory") { const g = $("page-armory"); g.classList.remove("armory-in"); void g.offsetWidth; g.classList.add("armory-in"); clearTimeout(g._t); g._t = setTimeout(() => g.classList.remove("armory-in"), 2400); }
     curPage = key; updateTitle();
     setMenu(false);
   }

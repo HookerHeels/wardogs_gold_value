@@ -260,6 +260,7 @@
   /* Page change: a gold bar sweeps left to right and the new page is revealed behind it */
   .sweep { position: absolute; top: 0; bottom: 0; left: 0; width: 90px; z-index: 5; pointer-events: none; opacity: 0; will-change: transform;
     background: linear-gradient(90deg, transparent, rgba(240,185,42,.10) 55%, rgba(240,185,42,.55) 96%, #ffe08a 98%, rgba(240,185,42,.0)); }
+  .sweep.rev { background: linear-gradient(270deg, transparent, rgba(240,185,42,.10) 55%, rgba(240,185,42,.55) 96%, #ffe08a 98%, rgba(240,185,42,.0)); }
   .dust { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; display: block; }
   body.stale .dust { opacity: .4; }
 
@@ -341,6 +342,22 @@
     -webkit-background-clip: text; background-clip: text; color: transparent;
     filter: brightness(1) drop-shadow(0 3px 0 #000) drop-shadow(0 0 12px rgba(212,160,23,.35)) drop-shadow(0 0 28px rgba(212,160,23,.18));
   }
+  /* Value focus-in: the number starts soft and blurred, then sharpens into focus while fading up */
+  .price-row.wait .symbol { opacity: 0; }
+  .stamp { animation: focus-in .8s cubic-bezier(.3,.6,.25,1) backwards; }
+  @keyframes focus-in {
+    from { opacity: 0; transform: scale(1.04); filter: blur(16px) drop-shadow(0 3px 0 #000) drop-shadow(0 0 12px rgba(212,160,23,.35)) drop-shadow(0 0 28px rgba(212,160,23,.18)); }
+    60%  { opacity: 1; }
+    to   { opacity: 1; transform: scale(1); filter: blur(0) drop-shadow(0 3px 0 #000) drop-shadow(0 0 12px rgba(212,160,23,.35)) drop-shadow(0 0 28px rgba(212,160,23,.18)); }
+  }
+  body.stale .stamp { animation-name: focus-in-stale; }
+  @keyframes focus-in-stale {
+    from { opacity: 0; transform: scale(1.04); filter: blur(16px) drop-shadow(0 3px 0 #000); }
+    60%  { opacity: 1; }
+    to   { opacity: 1; transform: scale(1); filter: blur(0) drop-shadow(0 3px 0 #000); }
+  }
+  @media (prefers-reduced-motion: reduce) { .stamp { animation: none; } }
+
   /* Cartoon glint: a diagonal shine crosses the digits only, then the whole number flashes */
   .current.glint { animation: glint-sweep .9s ease-in-out forwards, glint-flash .55s ease-out .8s; }
   @keyframes glint-sweep {
@@ -543,9 +560,9 @@
      DAILY VALUES now live in values.json (upload just that file each day).
      The three numbers below are only a fallback, used if values.json can't be read.
      ========================================================== */
-  let CURRENT_GOLD_VALUE  = 229361;
-  let PREVIOUS_GOLD_VALUE = 345880;
-  let UPDATED_AT          = "2026-10-13T00:02:35Z";  /* UTC, ISO format; shown in each visitor's own time */
+  let CURRENT_GOLD_VALUE  = 253947;
+  let PREVIOUS_GOLD_VALUE = 281880;
+  let UPDATED_AT          = "2026-10-15T00:02:42Z";  /* UTC, ISO format; shown in each visitor's own time */
   let HISTORY = {
     "2026-09-10": 2798240,
     "2026-09-11": 2413120,
@@ -579,7 +596,9 @@
     "2026-10-09": 407388,
     "2026-10-10": 272761,
     "2026-10-11": 272761,
-    "2026-10-12": 345880
+    "2026-10-12": 345880,
+    "2026-10-13": 229361,
+    "2026-10-14": 281880
   };                                  /* past daily values from values.json: { "2026-10-07": 326749, ... } (UTC day of each reset) */
   const HISTORY_DAYS = 120;                          /* how many days the bottom strip shows */
   const VALUES_URL = "values.json";
@@ -734,42 +753,32 @@
     $("updated").textContent = updatedValid ? localFmt.format(updatedDate).toUpperCase() : "—";
     if (armoryReady) renderArmory();
     updateTitle();
-    if (animate) { if (vaultPending) { cur.textContent = ""; } else playIntro(); } else cur.textContent = finalText;
+    if (animate) { if (vaultPending) { cur.textContent = ""; cur.parentElement.classList.add("wait"); } else playIntro(); } else cur.textContent = finalText;
   }
   function startIntroNow() { if (finalText && valuesReady) playIntro(); }
 
   /* Count-up with digits locking in left to right, then a glint. Click the number to replay. */
   let playing = false;
   function playIntro() {
-    cur.classList.remove("glint");
-    if (reduceMotion) { cur.textContent = finalText; return; }
+    const row = cur.parentElement, sym = row.querySelector(".symbol");
+    cur.classList.remove("glint", "stamp"); sym.classList.remove("stamp");
+    row.classList.remove("wait");
+    cur.textContent = finalText;
+    if (reduceMotion) return;
     if (playing) { replay = true; return; }
     playing = true;
-    const DURATION = 2000, FLICKER_MS = 50;
-    const chars = finalText.split("");
-    const total = chars.filter(c => /\d/.test(c)).length;
-    const t0 = performance.now();
-    let lastDraw = -FLICKER_MS, lastLocked = -1;
-    (function frame(t) {
-      const e = t - t0;
-      const locked = Math.min(total, Math.floor((e * total) / DURATION));
-      if (locked >= total) {
-        cur.textContent = finalText;
-        playing = false;
-        if (replay) { replay = false; playIntro(); return; }
-        if (!document.body.classList.contains("stale")) { void cur.offsetWidth; cur.classList.add("glint"); }
-        return;
-      }
-      if (e - lastDraw >= FLICKER_MS || locked !== lastLocked) {
-        let d = 0;
-        cur.textContent = chars.map(c => {
-          if (!/\d/.test(c)) return c;
-          return d++ < locked ? c : Math.floor(Math.random() * 10);
-        }).join("");
-        lastDraw = e; lastLocked = locked;
-      }
-      requestAnimationFrame(frame);
-    })(t0);
+    void cur.offsetWidth;
+    cur.classList.add("stamp"); sym.classList.add("stamp");
+    let done = false;
+    const finish = () => {
+      if (done) return; done = true;
+      cur.classList.remove("stamp"); sym.classList.remove("stamp");
+      playing = false;
+      if (replay) { replay = false; playIntro(); return; }
+      if (!document.body.classList.contains("stale")) { void cur.offsetWidth; cur.classList.add("glint"); }      /* shine sweep once the number is in focus */
+    };
+    cur.addEventListener("animationend", finish, { once: true });
+    setTimeout(finish, 1800);                                     /* safety net */
   }
   cur.addEventListener("click", playIntro);
 
@@ -883,6 +892,7 @@
   }
   /* Power-on intro: the count-up starts as the value box powers up; the status reads BOOTING until the sequence ends */
   var vaultPending = document.documentElement.classList.contains("build");
+  setTimeout(() => document.documentElement.classList.remove("build"), 2800);      /* the intro only plays once per load: later page switches use the sweep instead */
   if (vaultPending) {
     $("sys-text").textContent = "SYS // BOOTING";
     setTimeout(() => { vaultPending = false; startIntroNow(); }, 1100);
@@ -900,7 +910,9 @@
   /* Page-change sweep: the gold bar crosses the stage while the new page is uncovered behind it */
   const sweepEl = $("sweep");
   let sweepRaf = 0;
-  function wipeIn(panel) {
+  function wipeIn(panel, dir) {
+    dir = dir || 1;                                                 /* 1 = bar travels left to right, -1 = right to left */
+    sweepEl.classList.toggle("rev", dir < 0);
     cancelAnimationFrame(sweepRaf);
     if (reduceMotion || !sweepEl) { panel.style.clipPath = ""; return; }
     const stage = sweepEl.parentElement, sw = stage.clientWidth, bw = sweepEl.offsetWidth, DUR = 650, t0 = performance.now();
@@ -908,11 +920,18 @@
     sweepEl.style.opacity = "1";
     const step = now => {
       const k = Math.min(1, (now - t0) / DUR), e = ease(k);
-      const edge = e * (sw + bw);                                   /* x of the bar's leading edge, relative to the stage */
-      sweepEl.style.transform = `translateX(${edge - bw}px)`;
       const pr = panel.getBoundingClientRect(), sr = stage.getBoundingClientRect();
-      const reveal = Math.max(0, Math.min(pr.width, edge + sr.left - pr.left));
-      panel.style.clipPath = k < 1 ? `inset(-40px ${Math.max(0, pr.width - reveal)}px -40px -40px)` : "";
+      if (dir > 0) {
+        const edge = e * (sw + bw);                                 /* x of the bar's leading (right) edge, relative to the stage */
+        sweepEl.style.transform = `translateX(${edge - bw}px)`;
+        const reveal = Math.max(0, Math.min(pr.width, edge + sr.left - pr.left));
+        panel.style.clipPath = k < 1 ? `inset(-40px ${Math.max(0, pr.width - reveal)}px -40px -40px)` : "";
+      } else {
+        const x = sw - e * (sw + bw);                               /* left edge of the bar, which leads when it moves left */
+        sweepEl.style.transform = `translateX(${x}px)`;
+        const hidden = Math.max(0, Math.min(pr.width, x + sr.left - pr.left));
+        panel.style.clipPath = k < 1 ? `inset(-40px -40px -40px ${hidden}px)` : "";
+      }
       if (k < 1) sweepRaf = requestAnimationFrame(step); else sweepEl.style.opacity = "0";
     };
     sweepRaf = requestAnimationFrame(step);
@@ -959,7 +978,7 @@
       const on = k === key;
       p.item.setAttribute("aria-checked", String(on));
       p.panel.hidden = !on;
-      if (on && animate) { wipeIn(p.panel); }
+      if (on && animate) { wipeIn(p.panel, key === "armory" ? 1 : -1); }
     }
     $("page-label").textContent = PAGES[key].label;
     $("code-label").textContent = PAGES[key].code;

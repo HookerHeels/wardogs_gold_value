@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("build")}catch(e){}</script>
 <title>WARDOGS // Gold Market</title>
 <meta name="description" content="Wardogs Gold Rate">
 <meta name="theme-color" content="#d4a017">
@@ -22,7 +23,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Gold Market">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Cpath d='M16 4L28 16L16 28L4 16Z' fill='%23d4a017'/%3E%3C/svg%3E">
+<link rel="icon" id="favicon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23000'/%3E%3Cpath d='M9 8H23L29 25H3Z' fill='%23d4a017'/%3E%3Cpath d='M9 8H23L24 11H8Z' fill='%23f0b92a'/%3E%3Cpath d='M8 11H24L28 22H4Z' fill='%23a87c0c' opacity='.55'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -118,8 +119,10 @@
   .menu-item[aria-checked="true"]::before { content: "▸"; }
 
   /* Armory page: industrial bento grid. Steel-framed tiles with chamfered corners, bolts and a riveted cost plate; tiles grow on hover. */
-  .armory-panel { container-type: inline-size; padding: 26px; overflow: hidden; border-color: var(--gold-dim); background: linear-gradient(180deg, #14130d, #070706); box-shadow: 0 0 0 1px #000, 0 0 30px rgba(212,160,23,.08); }
-  .armory-panel .checker { -webkit-mask-image: none; mask-image: none; }
+  .plate.armory-panel { container-type: inline-size; padding: 14px 0 22px; overflow: visible; border: 0; background: none; box-shadow: none; }
+  .plate.armory-panel::before, .plate.armory-panel::after { display: none; }
+  .stage-checker { display: none; }
+  body.page-armory .stage-checker { display: block; -webkit-mask-image: none; mask-image: none; }
   .tile-grid {
     --cols: 6; --gap: 10px;
     position: relative; z-index: 1; display: grid; gap: var(--gap); grid-auto-flow: dense;
@@ -127,9 +130,9 @@
     grid-auto-rows: calc((100cqw - (var(--cols) - 1) * var(--gap)) / var(--cols) * var(--rowf, 1.15));   /* slightly tall cells (a bit shorter on big screens) */
   }
   @media (max-width: 900px) { .tile-grid { --cols: 4; } }
-  @container (min-width: 1000px) { .tile-grid { --cols: 8; --rowf: 1.15; } }
-  @container (min-width: 1300px) { .tile-grid { --cols: 10; --rowf: 1.12; } }
-  @container (min-width: 1700px) { .tile-grid { --cols: 12; } }
+  @container (min-width: 1052px) { .tile-grid { --cols: 8; --rowf: 1.15; } }
+  @container (min-width: 1352px) { .tile-grid { --cols: 10; --rowf: 1.12; } }
+  @container (min-width: 1752px) { .tile-grid { --cols: 12; } }
   body.page-armory .stage main { max-width: 1800px; }
   .tile { position: relative; transition: transform .18s ease-out, filter .18s; }
   /* Skin colours: marker square above the name, the hover frame and its glow */
@@ -144,15 +147,17 @@
   .tile.wide { grid-column: span 2; }
   .tile.tall { grid-row: span 2; }
   .tile.big  { grid-column: span 2; grid-row: span 2; }
+  .tile-stack { grid-column: span 2; grid-row: span 2; display: grid; grid-template-rows: 1fr 1fr; gap: var(--gap); min-height: 0; }
+  .tile-stack > .tile { grid-column: auto; grid-row: auto; min-height: 0; }
 
   /* Featured tile (limited-time skin): bigger, gold frame always on, slow pulsing glow, badge */
   .tile.feature { grid-column: span 4; grid-row: span 2; z-index: 2; filter: drop-shadow(0 0 12px rgba(240,185,42,.45)); }
   .tile.feature .tile-frame { background: linear-gradient(135deg, #f0b92a 0%, #6d5209 35%, #f0b92a 70%, #8a6508 100%); }
   .tile.feature .tile-frame::before { opacity: 0; }
-  .tile.feature .tile-name { font-size: 24px; letter-spacing: 1px; top: 14px; color: #fff3cf; }
+  .tile.feature .tile-name { font-size: 27px; letter-spacing: 1px; top: 14px; color: #fff3cf; }
   .tile.feature .serial { font-size: 18px; letter-spacing: 1.4px; }
   .tile.feature .tile-strip { padding-top: 46px; }
-  .tile.feature .tile-label { height: 40px; font-size: 19px; border-top-color: var(--gold-bright); }
+  .tile.feature .tile-label { height: 40px; font-size: 19px; border-top-color: var(--gold-bright); padding-right: 170px; }
   .tile.feature .tile-strip { bottom: 40px; width: 32px; }
   .tile.feature .tile-strip::before { width: 18px; height: 18px; left: 7px; }
   .tile.feature .tile-name { left: 46px; }
@@ -181,12 +186,13 @@
   }
   .tile.wide .serial { font-size: 12px; letter-spacing: .6px; }
   .tile.wide:not(.feature) .tile-strip { padding-top: 28px; }
+  .tile.wide:not(.feature) .serial { white-space: normal; line-height: 1.05; text-align: center; font-size: 10.5px; }   /* short tiles: a long skin name wraps onto a second line instead of being cut off */
   .tile.wide.feature .serial { font-size: 18px; letter-spacing: 1.4px; }   /* wide tiles are short, so their side names are a touch smaller */
   .tile-strip::before { content: ""; position: absolute; top: 8px; left: 6px; width: 14px; height: 14px; background: var(--skin-mark, var(--skin)); box-shadow: 0 0 0 1px var(--skin-edge, rgba(0,0,0,.35)); }
   .serial { writing-mode: vertical-rl; font: 700 14px var(--body); letter-spacing: 1px; color: #a3a6a0; text-transform: uppercase; max-height: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .tile-name {
     position: absolute; top: 9px; left: 38px; right: 26px; z-index: 2; text-align: center;
-    font: 700 14px/1.15 var(--body); letter-spacing: .3px; color: #f4f1e8; text-shadow: 0 1px 3px #000;
+    font: 700 17px/1.1 var(--body); letter-spacing: .3px; color: #f4f1e8; text-shadow: 0 1px 3px #000;
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
   .tile-img::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 70px; background: linear-gradient(180deg, rgba(0,0,0,.75), transparent); }
@@ -212,11 +218,15 @@
   .tile-label .sep { color: var(--grey); }
   .tile.tbd .tile-label { color: var(--grey); }
   @media (max-width: 700px) {
-    .armory-panel { padding: 16px; }
+    .plate.armory-panel { padding: 10px 0 16px; }
     .tile-grid { --cols: 2; --gap: 8px; }
     .tile.big { grid-column: span 1; grid-row: span 1; }
+    .tile-stack { display: contents; }
+    .tile-stack > .tile { grid-column: span 2; }
     .tile.feature { grid-column: span 2; grid-row: span 1; }
-    .tile.feature .tile-name { font-size: 17px; }
+    .tile.feature .tile-name { font-size: 19px; }
+    .tile.wide.feature .serial { font-size: 12px; letter-spacing: .6px; white-space: normal; line-height: 1.05; text-align: center; }
+    .tile.feature .tile-strip { padding-top: 32px; }
     .tile.feature .tile-label { height: 32px; font-size: 14px; padding-right: 100px; }
     .tile-label .lt { right: 10px; font-size: 10px; letter-spacing: 1px; }
     .tile.feature .tile-strip { bottom: 32px; }
@@ -224,12 +234,42 @@
     .tile-strip { bottom: 30px; }
     .serial { font-size: 12px; letter-spacing: .6px; }
     .tile-strip { padding-top: 32px; }
-    .tile-name { left: 36px; right: 20px; font-size: 13px; }
+    .tile-name { left: 36px; right: 20px; font-size: 15px; }
   }
   @media (prefers-reduced-motion: reduce) { .tile, .tile-frame::before { transition: none; } }
-  .page-in { animation: pagein .3s ease-out; }
-  @keyframes pagein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) { .page-in { animation: none; } }
+  /* Power-on intro (every load): industrial boot sequence, about 2 seconds. Panels flicker on like warehouse lights, a scan line passes over the page. */
+  html.build .topbar     { animation: b-fade .6s ease-out backwards; }
+  html.build .stage::before, html.build .stage::after { animation: b-fade 1s .3s ease-out backwards; }
+  html.build .emblem     { animation: b-fade 1.6s .4s ease-out backwards; }
+  html.build #code-label { animation: b-type .5s .55s steps(1, end) backwards; }
+  html.build #page-gold  { animation: b-power 1s .6s linear backwards; }
+  html.build #reset-panel { animation: b-power 1s 1.05s linear backwards; }
+  html.build footer      { animation: b-fade .8s 1.4s ease-out backwards; }
+  html.build .scan { display: block; }
+  .scan { display: none; position: absolute; left: 0; right: 0; top: 0; height: 90px; z-index: 4; pointer-events: none;
+    background: linear-gradient(180deg, transparent, rgba(240,185,42,.07) 70%, rgba(240,185,42,.38) 99%, transparent);
+    animation: b-scan 1.5s .35s cubic-bezier(.45,0,.35,1) both; }
+  @keyframes b-fade  { from { opacity: 0; } }
+  @keyframes b-type  { 0% { opacity: 0; } 25% { opacity: 1; } 40% { opacity: 0; } 55% { opacity: 1; } 70% { opacity: .2; } 100% { opacity: 1; } }
+  @keyframes b-power {
+    0%   { opacity: 0; clip-path: inset(-40px 50% -40px 50%); }
+    18%  { opacity: .85; clip-path: inset(-40px 30% -40px 30%); }
+    26%  { opacity: .15; }
+    38%  { opacity: .9; clip-path: inset(-40px 6% -40px 6%); }
+    46%  { opacity: .3; }
+    58%  { opacity: 1; clip-path: inset(-40px -40px -40px -40px); }
+    66%  { opacity: .55; }
+    78%  { opacity: 1; }
+    100% { opacity: 1; clip-path: inset(-40px -40px -40px -40px); }
+  }
+  @keyframes b-scan { from { transform: translateY(-100%); opacity: 1; } 85% { opacity: 1; } to { transform: translateY(900px); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { html.build *, html.build .scan { animation: none !important; } html.build .scan { display: none; } }
+  /* Page change: a gold bar sweeps left to right and the new page is revealed behind it */
+  .sweep { position: absolute; top: 0; bottom: 0; left: 0; width: 90px; z-index: 5; pointer-events: none; opacity: 0; will-change: transform;
+    background: linear-gradient(90deg, transparent, rgba(240,185,42,.10) 55%, rgba(240,185,42,.55) 96%, #ffe08a 98%, rgba(240,185,42,.0)); }
+  .dust { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; display: block; }
+  body.page-armory .dust { display: none; }
+  body.stale .dust { opacity: .4; }
 
 
   /* Plates */
@@ -414,6 +454,7 @@
 </style>
 </head>
 <body>
+
 <div class="hazard"></div>
 <div class="terminal" id="terminal">
 
@@ -434,6 +475,10 @@
   </header>
 
   <div class="stage">
+    <canvas class="checker stage-checker" aria-hidden="true"></canvas>
+    <div class="scan" aria-hidden="true"></div>
+    <canvas class="dust" id="dust" aria-hidden="true"></canvas>
+    <div class="sweep" id="sweep" aria-hidden="true"></div>
     <svg class="emblem" viewBox="0 0 400 400" aria-hidden="true">
       <circle cx="200" cy="200" r="190"/><circle cx="200" cy="200" r="140"/><circle cx="200" cy="200" r="70"/>
       <path d="M200 0V120M200 280V400M0 200H120M280 200H400"/>
@@ -467,7 +512,6 @@
     </section>
 
     <section class="plate armory-panel" id="page-armory" hidden>
-      <canvas class="checker" aria-hidden="true"></canvas>
       <div class="tile-grid" id="armory-grid"></div>
     </section>
 
@@ -507,9 +551,9 @@
      DAILY VALUES now live in values.json (upload just that file each day).
      The three numbers below are only a fallback, used if values.json can't be read.
      ========================================================== */
-  let CURRENT_GOLD_VALUE  = 407388;
-  let PREVIOUS_GOLD_VALUE = 447691;
-  let UPDATED_AT          = "2026-10-09T00:20:00Z";  /* UTC, ISO format; shown in each visitor's own time */
+  let CURRENT_GOLD_VALUE  = 229361;
+  let PREVIOUS_GOLD_VALUE = 345880;
+  let UPDATED_AT          = "2026-10-13T00:02:35Z";  /* UTC, ISO format; shown in each visitor's own time */
   let HISTORY = {
     "2026-09-10": 2798240,
     "2026-09-11": 2413120,
@@ -539,7 +583,11 @@
     "2026-10-05": 492453,
     "2026-10-06": 459112,
     "2026-10-07": 326749,
-    "2026-10-08": 447691
+    "2026-10-08": 447691,
+    "2026-10-09": 407388,
+    "2026-10-10": 272761,
+    "2026-10-11": 272761,
+    "2026-10-12": 345880
   };                                  /* past daily values from values.json: { "2026-10-07": 326749, ... } (UTC day of each reset) */
   const HISTORY_DAYS = 120;                          /* how many days the bottom strip shows */
   const VALUES_URL = "values.json";
@@ -559,11 +607,11 @@
     { item: "AMR 50", skin: "Two Tone Desert", bars: 15, size: "wide" },
     { item: "Bobcat", skin: "Two Tone Desert", bars: 5, size: "big" },
     { item: "Bushmaster M17S", skin: "Two Tone Desert", bars: 5, size: "big" },
-    { item: "Dune Buggy", skin: "Two Tone Desert", bars: 10, size: "wide" },
+    { item: "Dune Buggy", skin: "Two Tone Desert", bars: 10, size: "wide", stack: true },
     { item: "GGX 17", skin: "Digital Wood", bars: 5, size: "big" },
     { item: "Humvee", skin: "Two Tone Desert", bars: 10, size: "big" },
     { item: "KH-2002", skin: "Two Tone Desert", bars: 5, size: "big" },
-    { item: "M249 SAW", skin: "Two Tone Desert", bars: 15, size: "wide" },
+    { item: "M249 SAW", skin: "Two Tone Desert", bars: 15, size: "wide", stack: true },
     { item: "M4", skin: "Digital Wood", bars: 10, size: "wide" },
     { item: "M4", skin: "Two Tone Desert", bars: 10, size: "big" },
     { item: "M500", skin: "Two Tone Desert", bars: 10, size: "big" },
@@ -580,7 +628,7 @@
 
   /* If the values still haven't been updated this many minutes after the reset, the page flips to LAST KNOWN VALUE / OFFLINE and fades */
   const STALE_AFTER_MINUTES = 5;
-  const UPDATE_NOTE = "UPDATED DAILY // MAY TAKE UP TO 2 HOURS";   /* footer disclaimer wording; separate from the 5-minute offline timer above */
+  const UPDATE_NOTE = "UPDATED DAILY // MAY TAKE UP TO 3 HOURS";   /* footer disclaimer wording; separate from the 5-minute offline timer above */
   /* ========================================================== */
 
   const DAY_MS = 86400000, NEAR_MS = 300000;
@@ -611,6 +659,16 @@
     const todayKey = isNaN(upd) ? null : day(upd);
     const map = Object.assign({}, HISTORY);
     if (todayKey) map[todayKey] = CURRENT_GOLD_VALUE;
+    const have = Object.keys(map).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k) && isFinite(map[k])).sort();
+    /* Days missing from the list (value didn't change, so nothing was added) are filled in with the last known value, so every date shows */
+    if (have.length) {
+      let last = Number(map[have[0]]);
+      const end = new Date(have[have.length - 1] + "T00:00:00Z");
+      for (let d = new Date(have[0] + "T00:00:00Z"), n = 0; d <= end && n < 800; d = new Date(d.getTime() + 86400000), n++) {
+        const k = day(d);
+        if (isFinite(map[k]) && map[k] !== null && map[k] !== "") last = Number(map[k]); else map[k] = last;
+      }
+    }
     let keys = Object.keys(map).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k) && isFinite(map[k])).sort().slice(-HISTORY_DAYS);
     if (keys.length < 2) { box.setAttribute("hidden", ""); box.textContent = ""; return; }
     const vals = keys.map(k => Number(map[k])), lo = Math.min(...vals), hi = Math.max(...vals), span = hi - lo;
@@ -683,8 +741,10 @@
     updatedDate = new Date(UPDATED_AT); updatedValid = !isNaN(updatedDate);
     $("updated").textContent = updatedValid ? localFmt.format(updatedDate).toUpperCase() : "—";
     if (armoryReady) renderArmory();
-    if (animate) playIntro(); else cur.textContent = finalText;
+    updateTitle();
+    if (animate) { if (vaultPending) { cur.textContent = ""; } else playIntro(); } else cur.textContent = finalText;
   }
+  function startIntroNow() { if (finalText && valuesReady) playIntro(); }
 
   /* Count-up with digits locking in left to right, then a glint. Click the number to replay. */
   let playing = false;
@@ -790,26 +850,30 @@
   function renderArmory() {
     const pics = window.SKIN_IMAGES || {};
     const list = ARMORY_ITEMS.map((it, i) => ({ it, n: i + 1 }));
-    list.sort((a, b) => (b.it.featured ? 1 : 0) - (a.it.featured ? 1 : 0));        /* featured tiles first (the sort keeps the rest in listed order) */
+    /* Order: featured, one big tile beside it, the wide tiles packed next to that, the rest of the big tiles, then the "stack" tiles (two wide tiles stacked into one square slot) at the end */
+    const feat = list.filter(x => x.it.featured), stk = list.filter(x => x.it.stack && !x.it.featured);
+    const bigs = list.filter(x => !x.it.featured && !x.it.stack && x.it.size !== "wide");
+    const wides = list.filter(x => !x.it.featured && !x.it.stack && x.it.size === "wide");
+    list.length = 0; list.push(...feat, ...bigs.slice(0, 1), ...wides, ...bigs.slice(1), ...stk);
     if (SHUFFLE_ARMORY) {                              /* seeded by the UTC day: new order each day, same for every visitor */
       let a = Math.floor(Date.now() / 86400000) | 0;
       const rnd = () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
       for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
     }
-    armoryGrid.innerHTML = list.map(({ it, n }) => {
+    const tileHTML = ({ it, n }) => {
       const pic = it.img || pics[slug(`${it.item} ${it.skin}`)];
-      const swap = it.skin === "Emote";                /* emotes: the emote name is the title, "Emote" runs down the side */
       return `
     <div class="tile skin-${slug(it.skin)}${it.size ? " " + it.size : ""}${it.featured ? " feature" : ""}${it.bars == null && it.price == null ? " tbd" : ""}" role="group" tabindex="0" aria-label="${it.item} ${it.skin}">
       <div class="tile-frame"></div>
       <div class="tile-in">
         <div class="tile-img">${pic ? `<img src="${pic}" alt="" referrerpolicy="no-referrer">` : RIFLE_SVG}</div>
-        <div class="tile-strip"><span class="serial">${swap ? it.skin : it.item}</span></div>
-        <div class="tile-name">${swap ? it.item : it.skin}</div>
+        <div class="tile-strip"><span class="serial">${it.skin}</span></div>
+        <div class="tile-name">${it.item}</div>
         <div class="tile-label">${costLabel(it)}${it.featured ? `<span class="lt"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>${it.featured}</span>` : ""}</div>
       </div>
     </div>`;
-    }).join("");
+    };
+    armoryGrid.innerHTML = list.filter(x => !x.it.stack).map(tileHTML).join("") + (stk.length ? `<div class="tile-stack">${stk.map(tileHTML).join("")}</div>` : "");
   }
   window.addEventListener("load", () => { armoryReady = true; renderArmory(); });
 
@@ -824,19 +888,91 @@
     pickMenu.hidden = !open;
     pickBtn.setAttribute("aria-expanded", String(open));
   }
+  /* Power-on intro: the count-up starts as the value box powers up; the status reads BOOTING until the sequence ends */
+  var vaultPending = document.documentElement.classList.contains("build");
+  if (vaultPending) {
+    $("sys-text").textContent = "SYS // BOOTING";
+    setTimeout(() => { vaultPending = false; startIntroNow(); }, 1100);
+    setTimeout(() => { $("sys-text").textContent = document.body.classList.contains("stale") ? "SYS // OFFLINE" : "SYS // ONLINE"; }, 1900);
+  }
+
+  /* Tab title shows the value and direction; favicon is a gold bar */
+  var curPage = "gold-bar";
+  function updateTitle() {
+    if (curPage !== "gold-bar") { document.title = PAGES[curPage].title; return; }
+    const arrow = PREVIOUS_GOLD_VALUE > 0 ? (CURRENT_GOLD_VALUE > PREVIOUS_GOLD_VALUE ? " ▲" : CURRENT_GOLD_VALUE < PREVIOUS_GOLD_VALUE ? " ▼" : "") : "";
+    document.title = "$" + fmt(CURRENT_GOLD_VALUE) + arrow + " | WARDOGS Gold Market";
+  }
+
+  /* Page-change sweep: the gold bar crosses the stage while the new page is uncovered behind it */
+  const sweepEl = $("sweep");
+  let sweepRaf = 0;
+  function wipeIn(panel) {
+    cancelAnimationFrame(sweepRaf);
+    if (reduceMotion || !sweepEl) { panel.style.clipPath = ""; return; }
+    const stage = sweepEl.parentElement, sw = stage.clientWidth, bw = sweepEl.offsetWidth, DUR = 650, t0 = performance.now();
+    const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    sweepEl.style.opacity = "1";
+    const step = now => {
+      const k = Math.min(1, (now - t0) / DUR), e = ease(k);
+      const edge = e * (sw + bw);                                   /* x of the bar's leading edge, relative to the stage */
+      sweepEl.style.transform = `translateX(${edge - bw}px)`;
+      const pr = panel.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+      const reveal = Math.max(0, Math.min(pr.width, edge + sr.left - pr.left));
+      panel.style.clipPath = k < 1 ? `inset(-40px ${Math.max(0, pr.width - reveal)}px -40px -40px)` : "";
+      if (k < 1) sweepRaf = requestAnimationFrame(step); else sweepEl.style.opacity = "0";
+    };
+    sweepRaf = requestAnimationFrame(step);
+  }
+
+  /* Slow drifting dust over the Gold Market page */
+  (function dust() {
+    const cv = $("dust"); if (!cv || reduceMotion) return;
+    const ctx = cv.getContext("2d"); let W = 0, H = 0, dpr = 1, parts = [], last = 0, raf = 0;
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    function make() {
+      const n = Math.max(24, Math.min(90, Math.round(W * H / 16000)));
+      parts = Array.from({ length: n }, () => ({
+        x: rnd(0, W), y: rnd(0, H), r: Math.random() < .12 ? rnd(2, 3.4) : rnd(.6, 1.7),
+        vx: rnd(3, 11), vy: rnd(-5, -1), ph: rnd(0, 6.28), sp: rnd(.15, .5), a: rnd(.14, .45),
+        c: Math.random() < .65 ? "240,185,42" : "200,203,205"
+      }));
+    }
+    function size() {
+      dpr = window.devicePixelRatio || 1; W = cv.clientWidth; H = cv.clientHeight;
+      if (!W || !H) return;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); make();
+    }
+    function frame(t) {
+      raf = requestAnimationFrame(frame);
+      const dt = Math.min(.05, (t - last) / 1000 || 0); last = t;
+      if (document.body.classList.contains("page-armory") || !W) return;
+      ctx.clearRect(0, 0, W, H);
+      for (const p of parts) {
+        p.ph += p.sp * dt; p.x += (p.vx + Math.sin(p.ph) * 4) * dt; p.y += (p.vy + Math.cos(p.ph * .8) * 3) * dt;
+        if (p.x > W + 6) p.x = -6; if (p.y < -6) p.y = H + 6; if (p.y > H + 6) p.y = -6;
+        const tw = .75 + .25 * Math.sin(p.ph * 2.3);
+        ctx.beginPath(); ctx.fillStyle = `rgba(${p.c},${(p.a * tw).toFixed(3)})`;
+        ctx.arc(p.x, p.y, p.r, 0, 6.2832); ctx.fill();
+      }
+    }
+    if (window.ResizeObserver) new ResizeObserver(size).observe(cv); else window.addEventListener("resize", size);
+    size(); raf = requestAnimationFrame(frame);
+  })();
+
   function showPage(key, animate) {
     if (!PAGES[key]) key = "gold-bar";
     for (const [k, p] of Object.entries(PAGES)) {
       const on = k === key;
       p.item.setAttribute("aria-checked", String(on));
       p.panel.hidden = !on;
-      if (on && animate) { p.panel.classList.remove("page-in"); void p.panel.offsetWidth; p.panel.classList.add("page-in"); }
+      if (on && animate) { wipeIn(p.panel); }
     }
     $("page-label").textContent = PAGES[key].label;
     $("code-label").textContent = PAGES[key].code;
     $("reset-panel").hidden = key === "armory";
     document.body.classList.toggle("page-armory", key === "armory");
-    document.title = PAGES[key].title;
+    curPage = key; updateTitle();
     setMenu(false);
   }
   pickBtn.addEventListener("click", () => {

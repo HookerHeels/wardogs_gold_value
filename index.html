@@ -139,12 +139,30 @@
   .tile {
     --skin: var(--gold-bright); --skin-frame: linear-gradient(135deg, var(--gold-bright), var(--gold-dim)); --skin-glow: rgba(212,160,23,.4);
   }
-  .tile.skin-two-tone-desert { --skin: #c8a878; --skin-frame: linear-gradient(135deg, #d6b98c, #7b6240); --skin-glow: rgba(200,168,120,.45); }
-  .tile.skin-digital-wood    { --skin: #6b7d52; --skin-frame: linear-gradient(135deg, #7d9063, #3a4530); --skin-glow: rgba(120,140,95,.4); }
-  .tile.skin-black-and-gold  { --skin: #0b0b0b; --skin-mark: linear-gradient(135deg, #0b0b0b 50%, #f0b92a 50%); --skin-edge: #f0b92a;
+  .tile.skin-two-tone-desert, .group-head.skin-two-tone-desert, .chip.skin-two-tone-desert { --skin: #c8a878; --skin-frame: linear-gradient(135deg, #d6b98c, #7b6240); --skin-glow: rgba(200,168,120,.45); }
+  .tile.skin-digital-wood, .group-head.skin-digital-wood, .chip.skin-digital-wood    { --skin: #6b7d52; --skin-frame: linear-gradient(135deg, #7d9063, #3a4530); --skin-glow: rgba(120,140,95,.4); }
+  .tile.skin-black-and-gold, .group-head.skin-black-and-gold, .chip.skin-black-and-gold  { --skin: #0b0b0b; --skin-mark: linear-gradient(135deg, #0b0b0b 50%, #f0b92a 50%); --skin-edge: #f0b92a;
                                --skin-frame: linear-gradient(135deg, #f0b92a 0%, #0c0c0c 46%, #0c0c0c 54%, #d4a017 100%); --skin-glow: rgba(240,185,42,.45); }
-  .tile.skin-chocolate-chip  { --skin: #8a5a3a; --skin-frame: linear-gradient(135deg, #a8734d, #4a2e1c); --skin-glow: rgba(160,105,70,.45); }
-  .tile.skin-emote           { --skin: #c9cccd; --skin-frame: linear-gradient(135deg, #d6d9da, #5a5d5e); --skin-glow: rgba(200,205,208,.35); }
+  .tile.skin-chocolate-chip, .group-head.skin-chocolate-chip, .chip.skin-chocolate-chip  { --skin: #825537; --skin-frame: linear-gradient(135deg, #9e6c49, #462a1a); --skin-glow: rgba(160,105,70,.45); }
+  .tile.skin-emote, .group-head.skin-emote, .chip.skin-emote           { --skin: #c9cccd; --skin-frame: linear-gradient(135deg, #d6d9da, #5a5d5e); --skin-glow: rgba(200,205,208,.35); }
+  .chips { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+  .chip { --skin: var(--gold-bright); appearance: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px 7px; background: rgba(10,10,9,.85); color: var(--grey-light); border: 1px solid var(--grey-dark); font: 700 14px var(--body); letter-spacing: 2px; text-transform: uppercase; clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); transition: color .2s, border-color .2s, background .2s; }
+  .chip i { width: 10px; height: 10px; background: var(--skin-mark, var(--skin)); box-shadow: 0 0 0 1px var(--skin-edge, rgba(0,0,0,.5)); }
+  .chip b { font-weight: 700; color: var(--grey); letter-spacing: 1px; }
+  .chip:hover { border-color: var(--gold-dim); color: #fff; }
+  .chip[aria-pressed="true"] { background: var(--gold-bright); border-color: var(--gold-bright); color: #000; }
+  .chip[aria-pressed="true"] b { color: rgba(0,0,0,.6); }
+  .chip:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 2px; }
+  .arm-group { position: relative; z-index: 1; margin: 0 0 26px; }
+  .arm-group[hidden] { display: none; }
+  .group-head { --skin: var(--gold-bright); --ink: #0a0a09; display: flex; align-items: center; gap: 12px; margin: 0 0 12px; font: 700 15px var(--body); letter-spacing: 3px; text-transform: uppercase; color: var(--grey-light); }
+  .group-head i { display: none; }
+  .tile-strip .serial { display: none; }
+  .group-head > span:nth-child(2) { order: 1; padding: 5px 16px 4px; background: var(--skin); color: var(--ink); clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%); }
+  .group-head::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--gold-dim), transparent); order: 3; }
+  .group-head .n { order: 4; color: var(--grey); letter-spacing: 2px; font-size: 13px; }
+  .group-head.skin-black-and-gold > span:nth-child(2) { --ink: var(--gold-bright); box-shadow: inset 0 0 0 1px var(--gold-bright); }
+  .group-head.skin-digital-wood, .group-head.skin-chocolate-chip { --ink: #f4f1e8; }
   .tile.wide { grid-column: span 2; }
   .tile.tall { grid-row: span 2; }
   .tile.big  { grid-column: span 2; grid-row: span 2; }
@@ -158,7 +176,7 @@
   .tile.feature .tile-name { font-size: 27px; letter-spacing: 1px; top: 14px; color: #fff3cf; }
   .tile.feature .serial { font-size: 18px; letter-spacing: 1.4px; }
   .tile.feature .tile-strip { padding-top: 46px; }
-  .tile.feature .tile-label { height: 40px; font-size: 19px; border-top-color: var(--gold-bright); padding-right: 170px; }
+  .tile.feature .tile-label { height: 40px; font-size: 19px; border-top-color: var(--gold-bright); }
   .tile.feature .tile-strip { bottom: 40px; width: 32px; }
   .tile.feature .tile-strip::before { width: 18px; height: 18px; left: 7px; }
   .tile.feature .tile-name { left: 46px; }
@@ -228,7 +246,7 @@
     .tile.feature .tile-name { font-size: 19px; }
     .tile.wide.feature .serial { font-size: 12px; letter-spacing: .6px; white-space: normal; line-height: 1.05; text-align: center; }
     .tile.feature .tile-strip { padding-top: 32px; }
-    .tile.feature .tile-label { height: 32px; font-size: 14px; padding-right: 100px; }
+    .tile.feature .tile-label { height: 32px; font-size: 14px; }
     .tile-label .lt { right: 10px; font-size: 10px; letter-spacing: 1px; }
     .tile.feature .tile-strip { bottom: 32px; }
     .tile-label { font-size: 11px; height: 30px; padding: 0 16px; gap: 4px; }
@@ -522,7 +540,8 @@
     </section>
 
     <section class="plate armory-panel" id="page-armory" hidden>
-      <div class="tile-grid" id="armory-grid"></div>
+      <div class="chips" id="armory-chips" role="toolbar" aria-label="Filter by skin"></div>
+      <div id="armory-grid"></div>
     </section>
 
     <section class="plate reset" id="reset-panel">
@@ -858,24 +877,13 @@
   }, true);
   const slug = t => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const armoryShuffleSeed = SHUFFLE_EVERY === "day" ? (Math.floor(Date.now() / 86400000) | 0) : (Math.random() * 4294967296) | 0;
+  let armoryFilter = "";
   function renderArmory() {
     const pics = window.SKIN_IMAGES || {};
-    const list = ARMORY_ITEMS.map((it, i) => ({ it, n: i + 1 }));
-    /* Order: featured, one big tile beside it, the wide tiles packed next to that, the rest of the big tiles, then the "stack" tiles (two wide tiles stacked into one square slot) at the end */
-    const feat = list.filter(x => x.it.featured);
-    let bigs = list.filter(x => !x.it.featured && x.it.size !== "wide");
-    let wides = list.filter(x => !x.it.featured && !x.it.stack && x.it.size === "wide");
-    let stk = list.filter(x => x.it.stack && !x.it.featured);
-    if (SHUFFLE_ARMORY) {                              /* shuffle the big tiles and the wide tiles (each keeps its own size); the featured tile stays put */
-      let a = armoryShuffleSeed;
-      const rnd = () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
-      const shuf = arr => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
-      bigs = shuf(bigs.slice());
-      const allWide = shuf(wides.concat(stk));
-      stk = allWide.slice(-2); wides = allWide.slice(0, -2);      /* two random wide tiles become the stacked pair */
-    }
-    list.length = 0; list.push(...feat, ...bigs.slice(0, 1), ...wides, ...bigs.slice(1), ...stk);
-    const tileHTML = ({ it, n }) => {
+    let a = armoryShuffleSeed;
+    const rnd = () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+    const shuf = arr => { if (SHUFFLE_ARMORY) for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
+    const tileHTML = it => {
       const pic = it.img || pics[slug(`${it.item} ${it.skin}`)];
       return `
     <div class="tile skin-${slug(it.skin)}${it.size ? " " + it.size : ""}${it.featured ? " feature" : ""}${it.bars == null && it.price == null ? " tbd" : ""}" role="group" tabindex="0" aria-label="${it.item} ${it.skin}">
@@ -888,9 +896,39 @@
       </div>
     </div>`;
     };
-    armoryGrid.innerHTML = list.filter(x => !stk.includes(x)).map(tileHTML).join("") + (stk.length ? `<div class="tile-stack">${stk.map(tileHTML).join("")}</div>` : "");
-    armoryGrid.querySelectorAll(".tile").forEach((t, i) => t.style.setProperty("--i", i));
+    /* One section per skin, in the order the skins first appear in ARMORY_ITEMS. Inside a section: the featured tile first, then the big tiles and stacked pairs of wide tiles mixed up */
+    const SKIN_ORDER = ["Black And Gold", "Chocolate Chip", "Two Tone Desert", "Digital Wood", "Emote"];   /* order of the sections; any skin not listed goes last */
+    const rank = k => { const i = SKIN_ORDER.indexOf(k); return i < 0 ? 99 : i; };
+    const skins = [...new Set(ARMORY_ITEMS.map(it => it.skin))].sort((x, y) => rank(x) - rank(y));
+    const groups = skins.map(skin => {
+      const its = ARMORY_ITEMS.filter(it => it.skin === skin);
+      const feat = its.filter(it => it.featured);
+      const bigs = its.filter(it => !it.featured && it.size !== "wide");
+      const wides = shuf(its.filter(it => !it.featured && it.size === "wide"));
+      const units = bigs.map(tileHTML);
+      while (wides.length > 1) units.push(`<div class="tile-stack">${tileHTML(wides.pop())}${tileHTML(wides.pop())}</div>`);
+      shuf(units);
+      if (wides.length) units.push(tileHTML(wides.pop()));          /* an odd wide tile goes last */
+      return { skin, count: its.length, html: feat.map(tileHTML).concat(units).join("") };
+    });
+    armoryGrid.innerHTML = groups.map(g => `
+    <section class="arm-group" data-skin="${slug(g.skin)}"${armoryFilter && armoryFilter !== slug(g.skin) ? " hidden" : ""}>
+      <div class="group-head skin-${slug(g.skin)}"><i></i><span>${g.skin}</span><span class="n">${g.count} ${g.count === 1 ? "ITEM" : "ITEMS"}</span></div>
+      <div class="tile-grid">${g.html}</div>
+    </section>`).join("");
+    armoryChips.innerHTML = [`<button class="chip" type="button" data-skin="" aria-pressed="${!armoryFilter}">All</button>`]
+      .concat(groups.map(g => `<button class="chip skin-${slug(g.skin)}" type="button" data-skin="${slug(g.skin)}" aria-pressed="${armoryFilter === slug(g.skin)}"><i></i>${g.skin}</button>`)).join("");
+    armoryGrid.querySelectorAll(".tile-grid").forEach(gr => gr.querySelectorAll(".tile").forEach((t, i) => t.style.setProperty("--i", i)));
   }
+  const armoryChips = $("armory-chips");
+  armoryChips.addEventListener("click", e => {
+    const c = e.target.closest(".chip"); if (!c) return;
+    armoryFilter = c.dataset.skin;
+    armoryChips.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", String(x === c)));
+    armoryGrid.querySelectorAll(".arm-group").forEach(g => { g.hidden = !!armoryFilter && g.dataset.skin !== armoryFilter; });
+    const pg = $("page-armory"); pg.classList.remove("armory-in"); void pg.offsetWidth; pg.classList.add("armory-in");
+    clearTimeout(pg._t); pg._t = setTimeout(() => pg.classList.remove("armory-in"), 1600);
+  });
   window.addEventListener("load", () => { armoryReady = true; renderArmory(); });
 
   /* Page picker (GOLD BAR / ARMORY), kept in the URL hash so each page can be linked */
